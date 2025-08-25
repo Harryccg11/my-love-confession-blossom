@@ -3,8 +3,17 @@ import FloatingParticles from '../components/FloatingParticles';
 import AnimatedText from '../components/AnimatedText';
 import cherryBlossomsBg from '../assets/cherry-blossoms-bg.jpg';
 
+interface ClickHeart {
+  id: number;
+  x: number;
+  y: number;
+}
+
 const Index = () => {
   const [currentSection, setCurrentSection] = useState(0);
+  const [isStarted, setIsStarted] = useState(false);
+  const [clickHearts, setClickHearts] = useState<ClickHeart[]>([]);
+  const [showSurprise, setShowSurprise] = useState(false);
 
   const loveText = [
     "¿SABES PORQUE ME ENAMORE DE TI?",
@@ -19,73 +28,213 @@ const Index = () => {
     "No sé qué nos deparará el futuro, pero hay algo que sí sé: Me enamoré de ti sin esperarlo, sin planearlo, pero con todo mi corazón. Y si tuviera la oportunidad de elegir, te volvería a elegir a ti, una y otra vez... 🌺💗"
   ];
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSection(prev => {
-        if (prev < loveText.length - 1) {
-          return prev + 1;
-        }
-        return prev;
-      });
-    }, 5000); // Show next section every 5 seconds
+  const surpriseMessages = [
+    "¡Eres increíble! 💕",
+    "Tu sonrisa ilumina mi mundo ✨",
+    "Cada día contigo es un regalo 🎁",
+    "Eres mi persona favorita 🌟",
+    "Contigo todo es mejor 🥰"
+  ];
 
-    return () => clearInterval(interval);
-  }, [loveText.length]);
+  // Función para crear corazones al hacer click/touch
+  const handleScreenClick = (e: React.MouseEvent | React.TouchEvent) => {
+    if (!isStarted) return;
+    
+    const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const x = 'clientX' in e ? e.clientX - rect.left : e.touches[0].clientX - rect.left;
+    const y = 'clientY' in e ? e.clientY - rect.top : e.touches[0].clientY - rect.top;
+    
+    const newHeart: ClickHeart = {
+      id: Date.now(),
+      x: (x / rect.width) * 100,
+      y: (y / rect.height) * 100,
+    };
+    
+    setClickHearts(prev => [...prev, newHeart]);
+    
+    // Remover el corazón después de la animación
+    setTimeout(() => {
+      setClickHearts(prev => prev.filter(heart => heart.id !== newHeart.id));
+    }, 1500);
+  };
+
+  const handleNext = () => {
+    if (currentSection < loveText.length - 1) {
+      setCurrentSection(prev => prev + 1);
+    } else {
+      setShowSurprise(true);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentSection > 0) {
+      setCurrentSection(prev => prev - 1);
+    }
+  };
+
+  const startExperience = () => {
+    setIsStarted(true);
+    setCurrentSection(0);
+  };
+
+  if (!isStarted) {
+    return (
+      <div className="min-h-screen relative overflow-hidden">
+        {/* Background */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${cherryBlossomsBg})` }}
+        />
+        <div className="absolute inset-0 bg-gradient-romantic opacity-90" />
+        <FloatingParticles />
+        
+        {/* Welcome Screen */}
+        <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+          <div className="text-center max-w-md mx-auto">
+            <div className="text-6xl mb-6 animate-romantic-pulse">💝</div>
+            <h1 className="text-2xl md:text-3xl font-bold bg-gradient-text bg-clip-text text-transparent mb-6">
+              Tienes un regalo especial
+            </h1>
+            <p className="text-lg text-foreground/80 mb-8 leading-relaxed">
+              Alguien muy especial quiere compartir algo contigo...
+            </p>
+            <button
+              onClick={startExperience}
+              className="bg-rose-medium text-white px-8 py-4 rounded-full text-lg font-medium shadow-romantic hover:scale-105 transition-all duration-300 hover:shadow-soft"
+            >
+              Abrir Regalo 💕
+            </button>
+            <p className="text-sm text-foreground/60 mt-4">
+              Toca la pantalla para crear magia ✨
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (showSurprise) {
+    return (
+      <div className="min-h-screen relative overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: `url(${cherryBlossomsBg})` }}
+        />
+        <div className="absolute inset-0 bg-gradient-romantic opacity-90" />
+        <FloatingParticles />
+        
+        <div className="relative z-10 min-h-screen flex items-center justify-center p-4">
+          <div className="text-center max-w-lg mx-auto">
+            <div className="text-8xl mb-6 animate-bounce">🎉</div>
+            <h1 className="text-3xl md:text-4xl font-bold bg-gradient-text bg-clip-text text-transparent mb-6">
+              ¡Sorpresa Final!
+            </h1>
+            <div className="space-y-4 mb-8">
+              {surpriseMessages.map((message, index) => (
+                <AnimatedText
+                  key={index}
+                  text={message}
+                  delay={index * 500}
+                  className="text-xl text-foreground/90 backdrop-blur-sm bg-white/20 rounded-2xl p-4"
+                />
+              ))}
+            </div>
+            <div className="text-6xl mb-6 animate-romantic-pulse">💍✨🌹</div>
+            <button
+              onClick={() => {
+                setShowSurprise(false);
+                setCurrentSection(0);
+              }}
+              className="bg-gold-medium text-white px-6 py-3 rounded-full font-medium shadow-romantic hover:scale-105 transition-all duration-300"
+            >
+              Leer de nuevo 💕
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen relative overflow-hidden">
-      {/* Background Image */}
+    <div 
+      className="min-h-screen relative overflow-hidden cursor-pointer"
+      onClick={handleScreenClick}
+      onTouchStart={handleScreenClick}
+    >
+      {/* Background */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{ backgroundImage: `url(${cherryBlossomsBg})` }}
       />
-      
-      {/* Gradient Overlay */}
       <div className="absolute inset-0 bg-gradient-romantic opacity-80" />
-      
-      {/* Floating Particles */}
       <FloatingParticles />
       
+      {/* Click Hearts */}
+      {clickHearts.map((heart) => (
+        <div
+          key={heart.id}
+          className="absolute pointer-events-none text-2xl animate-fade-in-up z-20"
+          style={{
+            left: `${heart.x}%`,
+            top: `${heart.y}%`,
+            animation: 'fade-in-up 1.5s ease-out forwards',
+          }}
+        >
+          💖
+        </div>
+      ))}
+      
       {/* Main Content */}
-      <div className="relative z-10 min-h-screen flex items-center justify-center p-6">
-        <div className="max-w-4xl mx-auto text-center">
-          {/* Heart Icon */}
-          <div className="mb-8 flex justify-center">
-            <div className="w-16 h-16 text-rose-medium animate-romantic-pulse">
-              💖
-            </div>
+      <div className="relative z-10 min-h-screen flex flex-col justify-between p-4 md:p-6">
+        {/* Header */}
+        <div className="text-center pt-4">
+          <div className="text-4xl mb-2 animate-romantic-pulse">💖</div>
+          <div className="text-sm text-foreground/70">
+            {currentSection + 1} de {loveText.length}
           </div>
+        </div>
 
-          {/* Title */}
-          {currentSection >= 0 && (
-            <AnimatedText
-              text={loveText[0]}
-              delay={500}
-              className="text-4xl md:text-6xl font-bold bg-gradient-text bg-clip-text text-transparent mb-12 tracking-wide"
-            />
-          )}
-
-          {/* Love Letter Content */}
-          <div className="space-y-8 max-h-96 overflow-y-auto scrollbar-hide">
-            {loveText.slice(1).map((paragraph, index) => (
-              currentSection > index && (
-                <AnimatedText
-                  key={index}
-                  text={paragraph}
-                  delay={(index + 1) * 1000}
-                  className="text-lg md:text-xl leading-relaxed text-foreground/90 font-light tracking-wide backdrop-blur-sm bg-white/20 rounded-2xl p-6 shadow-romantic"
-                />
-              )
-            ))}
+        {/* Content */}
+        <div className="flex-1 flex items-center justify-center">
+          <div className="max-w-2xl mx-auto text-center">
+            {currentSection === 0 ? (
+              <AnimatedText
+                text={loveText[0]}
+                delay={200}
+                className="text-3xl md:text-5xl font-bold bg-gradient-text bg-clip-text text-transparent mb-8 tracking-wide px-4"
+              />
+            ) : (
+              <AnimatedText
+                text={loveText[currentSection]}
+                delay={200}
+                className="text-base md:text-lg leading-relaxed text-foreground/90 font-light tracking-wide backdrop-blur-sm bg-white/20 rounded-2xl p-4 md:p-6 shadow-romantic"
+              />
+            )}
           </div>
+        </div>
 
-          {/* Progress Indicator */}
-          <div className="mt-12 flex justify-center space-x-2">
-            {loveText.slice(1).map((_, index) => (
+        {/* Navigation */}
+        <div className="flex justify-between items-center pb-4">
+          <button
+            onClick={handlePrevious}
+            disabled={currentSection === 0}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-all duration-300 ${
+              currentSection === 0 
+                ? 'bg-white/10 text-foreground/30 cursor-not-allowed' 
+                : 'bg-white/20 text-foreground/80 hover:bg-white/30 hover:scale-105'
+            }`}
+          >
+            <span>←</span>
+            <span className="hidden sm:inline">Anterior</span>
+          </button>
+
+          {/* Progress Dots */}
+          <div className="flex space-x-2">
+            {loveText.map((_, index) => (
               <div
                 key={index}
                 className={`w-2 h-2 rounded-full transition-all duration-500 ${
-                  currentSection > index 
+                  currentSection >= index 
                     ? 'bg-rose-medium shadow-soft' 
                     : 'bg-white/30'
                 }`}
@@ -93,22 +242,49 @@ const Index = () => {
             ))}
           </div>
 
-          {/* Decorative Elements */}
-          <div className="absolute top-10 left-10 text-2xl animate-sparkle">✨</div>
-          <div className="absolute top-20 right-20 text-2xl animate-sparkle" style={{ animationDelay: '1s' }}>🌸</div>
-          <div className="absolute bottom-20 left-20 text-2xl animate-sparkle" style={{ animationDelay: '2s' }}>💕</div>
-          <div className="absolute bottom-10 right-10 text-2xl animate-sparkle" style={{ animationDelay: '0.5s' }}>🌹</div>
+          <button
+            onClick={handleNext}
+            className="flex items-center space-x-2 px-4 py-2 rounded-full bg-rose-medium text-white hover:bg-rose-deep hover:scale-105 transition-all duration-300 shadow-romantic"
+          >
+            <span className="hidden sm:inline">
+              {currentSection === loveText.length - 1 ? 'Sorpresa' : 'Siguiente'}
+            </span>
+            <span>{currentSection === loveText.length - 1 ? '🎁' : '→'}</span>
+          </button>
         </div>
       </div>
 
-      {/* Custom Scrollbar Styles */}
+      {/* Decorative Elements */}
+      <div className="absolute top-4 left-4 text-lg md:text-2xl animate-sparkle opacity-70">✨</div>
+      <div className="absolute top-8 right-4 text-lg md:text-2xl animate-sparkle opacity-70" style={{ animationDelay: '1s' }}>🌸</div>
+      <div className="absolute bottom-20 left-4 text-lg md:text-2xl animate-sparkle opacity-70" style={{ animationDelay: '2s' }}>💕</div>
+      <div className="absolute bottom-4 right-20 text-lg md:text-2xl animate-sparkle opacity-70" style={{ animationDelay: '0.5s' }}>🌹</div>
+
+      {/* Hint Text */}
+      <div className="absolute top-1/2 left-4 transform -translate-y-1/2 text-xs text-foreground/40 writing-mode-vertical hidden md:block">
+        Toca la pantalla 💫
+      </div>
+      
+      {/* Custom Styles */}
       <style>{`
-        .scrollbar-hide {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
+        .writing-mode-vertical {
+          writing-mode: vertical-lr;
+          text-orientation: mixed;
         }
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none;
+        
+        @keyframes fade-in-up {
+          0% {
+            opacity: 0;
+            transform: translateY(20px) scale(0.8);
+          }
+          50% {
+            opacity: 1;
+            transform: translateY(-10px) scale(1.2);
+          }
+          100% {
+            opacity: 0;
+            transform: translateY(-30px) scale(0.8);
+          }
         }
       `}</style>
     </div>
