@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Un Regalo Especial Para Ti 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            overflow-x: hidden;
+            cursor: pointer;
+        }
+
+        .container {
+            min-height: 100vh;
+            position: relative;
+            background: linear-gradient(135deg, 
+                rgba(252, 165, 165, 0.8), 
+                rgba(251, 146, 60, 0.6), 
+                rgba(168, 85, 247, 0.7)
+            );
+            background-attachment: fixed;
+        }
+
+        .background-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 192, 203, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 182, 193, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(255, 105, 180, 0.2) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .particle:nth-child(1) { background: #f472b6; width: 6px; height: 6px; top: 20%; left: 10%; animation-delay: 0s; }
+        .particle:nth-child(2) { background: #fbbf24; width: 8px; height: 8px; top: 60%; left: 20%; animation-delay: 1s; }
+        .particle:nth-child(3) { background: #a855f7; width: 4px; height: 4px; top: 80%; left: 80%; animation-delay: 2s; }
+        .particle:nth-child(4) { background: #f472b6; width: 10px; height: 10px; top: 30%; left: 70%; animation-delay: 3s; }
+        .particle:nth-child(5) { background: #fbbf24; width: 5px; height: 5px; top: 70%; left: 60%; animation-delay: 1.5s; }
+        .particle:nth-child(6) { background: #a855f7; width: 7px; height: 7px; top: 10%; left: 50%; animation-delay: 2.5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(120deg); }
+            66% { transform: translateY(10px) rotate(240deg); }
+        }
+
+        .welcome-screen, .main-content, .surprise-screen {
+            position: relative;
+            z-index: 10;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .hidden { display: none; }
+
+        .welcome-content {
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 40px 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .gift-emoji {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .welcome-title {
+            font-size: 1.8rem;
+            color: white;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome-subtitle {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .open-btn {
+            background: linear-gradient(45deg, #f472b6, #fb7185);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(244, 114, 182, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .open-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(244, 114, 182, 0.6);
+        }
+
+        .hint {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 15px;
+        }
+
+        .main-content {
+            justify-content: space-between;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding-top: 20px;
+        }
+
+        .heart-emoji {
+            font-size: 2.5rem;
+            animation: pulse 2s infinite;
+        }
+
+        .progress-counter {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        .content-area {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px 0;
+        }
+
+        .text-content {
+            max-width: 600px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transform: translateY(30px);
+            animation: fadeInUp 1s ease-out 0.3s forwards;
+        }
+
+        .title-text {
+            font-size: 2rem;
+            background: linear-gradient(45deg, #ffffff, #f8fafc);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+            line-height: 1.2;
+            margin-bottom: 20px;
+        }
+
+        .paragraph-text {
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.95);
+            line-height: 1.8;
+            text-align: left;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 20px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: 25px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .nav-btn:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.4);
+            cursor: not-allowed;
+        }
+
+        .nav-btn:not(:disabled) {
+            background: rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .nav-btn:not(:disabled):hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .next-btn {
+            background: linear-gradient(45deg, #f472b6, #fb7185) !important;
+            color: white !important;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+        }
+
+        .progress-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transition: all 0.5s ease;
+        }
+
+        .dot.active {
+            background: #f472b6;
+            box-shadow: 0 0 15px rgba(244, 114, 182, 0.6);
+        }
+
+        .decorative-elements {
+            position: absolute;
+            font-size: 1.5rem;
+            opacity: 0.7;
+            animation: sparkle 3s ease-in-out infinite;
+        }
+
+        .deco-1 { top: 20px; left: 20px; animation-delay: 0s; }
+        .deco-2 { top: 40px; right: 20px; animation-delay: 1s; }
+        .deco-3 { bottom: 100px; left: 20px; animation-delay: 2s; }
+        .deco-4 { bottom: 20px; right: 80px; animation-delay: 0.5s; }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0.7; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        .click-heart {
+            position: absolute;
+            font-size: 1.5rem;
+            pointer-events: none;
+            animation: heartFloat 1.5s ease-out forwards;
+            z-index: 20;
+        }
+
+        @keyframes heartFloat {
+            0% {
+                opacity: 0;
+                transform: translateY(0) scale(0.8);
+            }
+            50% {
+                opacity: 1;
+                transform: translateY(-15px) scale(1.2);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.8);
+            }
+        }
+
+        .surprise-content {
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .celebration-emoji {
+            font-size: 5rem;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% { transform: translateY(0); }
+            40%, 43% { transform: translateY(-30px); }
+            70% { transform: translateY(-15px); }
+        }
+
+        .surprise-title {
+            font-size: 2.5rem;
+            color: white;
+            margin: 20px 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .surprise-message {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        .surprise-message:nth-child(3) { animation-delay: 0.5s; }
+        .surprise-message:nth-child(4) { animation-delay: 1s; }
+        .surprise-message:nth-child(5) { animation-delay: 1.5s; }
+        .surprise-message:nth-child(6) { animation-delay: 2s; }
+        .surprise-message:nth-child(7) { animation-delay: 2.5s; }
+
+        .final-emojis {
+            font-size: 3rem;
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+        }
+
+        .restart-btn {
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(251, 191, 36, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .restart-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        .vertical-hint {
+            position: absolute;
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%) rotate(-90deg);
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.5);
+            transform-origin: center;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .welcome-content { padding: 30px 20px; max-width: 350px; }
+            .welcome-title { font-size: 1.5rem; }
+            .welcome-subtitle { font-size: 1rem; }
+            .text-content { padding: 20px; margin: 0 10px; }
+            .title-text { font-size: 1.6rem; }
+            .paragraph-text { font-size: 1rem; }
+            .navigation { padding: 0 10px 20px; }
+            .nav-btn { padding: 8px 15px; font-size: 0.9rem; }
+            .vertical-hint { display: none; }
+            .decorative-elements { font-size: 1.2rem; }
+        }
+
+        @media (max-width: 480px) {
+            .welcome-title { font-size: 1.3rem; }
+            .title-text { font-size: 1.4rem; }
+            .paragraph-text { font-size: 0.95rem; }
+            .text-content { padding: 15px; }
+            .surprise-title { font-size: 2rem; }
+            .celebration-emoji { font-size: 4rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="container">
+        <!-- Particles Background -->
+        <div class="particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+        
+        <!-- Background Pattern -->
+        <div class="background-pattern"></div>
+
+        <!-- Welcome Screen -->
+        <div class="welcome-screen" id="welcomeScreen">
+            <div class="welcome-content">
+                <div class="gift-emoji">💝</div>
+                <h1 class="welcome-title">Tienes un regalo especial</h1>
+                <p class="welcome-subtitle">Alguien muy especial quiere compartir algo contigo...</p>
+                <button class="open-btn" onclick="startExperience()">Abrir Regalo 💕</button>
+                <p class="hint">Toca la pantalla para crear magia ✨</p>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content hidden" id="mainContent">
+            <div class="header">
+                <div class="heart-emoji">💖</div>
+                <div class="progress-counter" id="progressCounter">1 de 10</div>
+            </div>
+
+            <div class="content-area">
+                <div class="text-content" id="textContent">
+                    <div class="title-text" id="titleText">¿SABES PORQUE ME ENAMORE DE TI?</div>
+                </div>
+            </div>
+
+            <div class="navigation">
+                <button class="nav-btn" id="prevBtn" onclick="previousSection()" disabled>
+                    <span>←</span>
+                    <span class="nav-text">Anterior</span>
+                </button>
+
+                <div class="progress-dots" id="progressDots">
+                    <!-- Dots will be generated by JavaScript -->
+                </div>
+
+                <button class="nav-btn next-btn" id="nextBtn" onclick="nextSection()">
+                    <span class="nav-text">Siguiente</span>
+                    <span>→</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Surprise Screen -->
+        <div class="surprise-screen hidden" id="surpriseScreen">
+            <div class="surprise-content">
+                <div class="celebration-emoji">🎉</div>
+                <h1 class="surprise-title">¡Sorpresa Final!</h1>
+                <div class="surprise-message">¡Eres increíble! 💕</div>
+                <div class="surprise-message">Tu sonrisa ilumina mi mundo ✨</div>
+                <div class="surprise-message">Cada día contigo es un regalo 🎁</div>
+                <div class="surprise-message">Eres mi persona favorita 🌟</div>
+                <div class="surprise-message">Contigo todo es mejor 🥰</div>
+                <div class="final-emojis">💍✨🌹</div>
+                <button class="restart-btn" onclick="restartExperience()">Leer de nuevo 💕</button>
+            </div>
+        </div>
+
+        <!-- Decorative Elements -->
+        <div class="decorative-elements deco-1">✨</div>
+        <div class="decorative-elements deco-2">🌸</div>
+        <div class="decorative-elements deco-3">💕</div>
+        <div class="decorative-elements deco-4">🌹</div>
+
+        <!-- Vertical Hint -->
+        <div class="vertical-hint">Toca la pantalla 💫</div>
+    </div>
+
+    <script>
+        let currentSection = 0;
+        let isStarted = false;
+
+        const loveText = [
+            "¿SABES PORQUE ME ENAMORE DE TI?",
+            "Si alguien me hubiera dicho que un día tu nombre se volvería mi pensamiento más recurrente, que mi día no estaría completo sin escuchar tu voz, que tu risa se convertiría en mi canción favorita... probablemente no lo habría creído. Pero aquí estoy, tratando de poner en palabras algo que quizás no tenga explicación.",
+            "No planeé enamorarme de ti. No era parte de ningún plan ni de ninguna historia que imaginé. Pero sucedió, y ahora me pregunto cómo pude vivir tanto tiempo sin sentir esto. No fue un solo instante ni un momento específico; fue cada pequeño detalle, cada conversación, cada mirada que sin darme cuenta me iba atrapando.",
+            "Me enamoré de ti porque cuando hablo contigo, todo parece más ligero, como si el mundo se pusiera en pausa y solo existiéramos tú y yo. Porque contigo no hay silencios incómodos, solo pausas en las que disfruto simplemente estar. Porque sin importar cómo haya sido mi día, basta con que me hables para que todo se sienta mejor.",
+            "Me enamoré porque contigo no tengo que pretender nada. Puedo ser quien realmente soy, sin miedo a equivocarme, sin necesidad de impresionar. Porque cuando me miras, siento que ves más allá de lo que los demás ven, que entiendes mis pensamientos incluso antes de que los diga en voz alta. Y eso, aunque me asusta un poco, me hace sentir que contigo siempre tengo un refugio.",
+            "Me enamoré porque en tu risa hay una chispa que enciende algo en mí, porque cuando hablas con pasión de tus sueños, tu mirada brilla de una forma que me deja sin palabras. Porque me gusta cómo te emocionas por las cosas más simples, cómo tienes esa manera tan tuya de ver el mundo, como si en cada pequeño detalle hubiera algo digno de admirar.",
+            "Me enamoré de ti porque me gusta cómo me haces sentir. Me gusta que, sin proponértelo, logras llenar mis días de luz. Me gusta que, aunque estés lejos, de alguna manera siempre te siento cerca. Me gusta la forma en que logras calmarme cuando todo parece ir demasiado rápido y, al mismo tiempo, la forma en que haces que mi corazón lata más fuerte.",
+            "Y cada noche me hago la misma pregunta: ¿cómo hago para no caer aún más en este sentimiento? ¿Cómo evitar que crezca algo que ya es tan inmenso? A veces intento convencerme de que no debería sentir esto tan profundo, que quizá debería frenar un poco, que tal vez me estoy perdiendo demasiado en ti. Pero luego pienso en todo lo que eres, en cada momento contigo, у me doy cuenta de que no quiero evitarlo. No quiero detenerlo.",
+            "Porque tú vales la pena. Cada instante, cada palabra, cada sonrisa. Valen la pena los pensamientos que me asaltan a mitad de la noche, valen la pena las ganas de verte, de hablarte, de saber de ti. Vale la pena todo lo que siento, incluso si a veces me asusta, incluso si no sé qué pasará después.",
+            "No sé qué nos deparará el futuro, pero hay algo que sí sé: Me enamoré de ti sin esperarlo, sin planearlo, pero con todo mi corazón. Y si tuviera la oportunidad de elegir, te volvería a elegir a ti, una y otra vez... 🌺💗"
+        ];
+
+        function startExperience() {
+            isStarted = true;
+            document.getElementById('welcomeScreen').classList.add('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+            generateProgressDots();
+            updateContent();
+        }
+
+        function generateProgressDots() {
+            const dotsContainer = document.getElementById('progressDots');
+            dotsContainer.innerHTML = '';
+            for (let i = 0; i < loveText.length; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'dot';
+                if (i === currentSection) dot.classList.add('active');
+                dotsContainer.appendChild(dot);
+            }
+        }
+
+        function updateContent() {
+            const titleText = document.getElementById('titleText');
+            const textContent = document.getElementById('textContent');
+            const progressCounter = document.getElementById('progressCounter');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+
+            // Update counter
+            progressCounter.textContent = `${currentSection + 1} de ${loveText.length}`;
+
+            // Update content with animation
+            textContent.style.opacity = '0';
+            textContent.style.transform = 'translateY(30px)';
+
+            setTimeout(() => {
+                if (currentSection === 0) {
+                    titleText.textContent = loveText[0];
+                    titleText.className = 'title-text';
+                    textContent.innerHTML = '<div class="title-text">' + loveText[0] + '</div>';
+                } else {
+                    textContent.innerHTML = '<div class="paragraph-text">' + loveText[currentSection] + '</div>';
+                }
+
+                textContent.style.opacity = '1';
+                textContent.style.transform = 'translateY(0)';
+            }, 300);
+
+            // Update buttons
+            prevBtn.disabled = currentSection === 0;
+            
+            if (currentSection === loveText.length - 1) {
+                nextBtn.innerHTML = '<span class="nav-text">Sorpresa</span><span>🎁</span>';
+            } else {
+                nextBtn.innerHTML = '<span class="nav-text">Siguiente</span><span>→</span>';
+            }
+
+            // Update progress dots
+            updateProgressDots();
+        }
+
+        function updateProgressDots() {
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, index) => {
+                if (index <= currentSection) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+        }
+
+        function nextSection() {
+            if (currentSection < loveText.length - 1) {
+                currentSection++;
+                updateContent();
+            } else {
+                showSurprise();
+            }
+        }
+
+        function previousSection() {
+            if (currentSection > 0) {
+                currentSection--;
+                updateContent();
+            }
+        }
+
+        function showSurprise() {
+            document.getElementById('mainContent').classList.add('hidden');
+            document.getElementById('surpriseScreen').classList.remove('hidden');
+        }
+
+        function restartExperience() {
+            currentSection = 0;
+            document.getElementById('surpriseScreen').classList.add('hidden');
+            document.getElementById('mainContent').classList.remove('hidden');
+            updateContent();
+        }
+
+        // Click/Touch Hearts Effect
+        function createHeart(x, y) {
+            if (!isStarted) return;
+            
+            const heart = document.createElement('div');
+            heart.className = 'click-heart';
+            heart.textContent = '💖';
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+            
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 1500);
+        }
+
+        // Event listeners for creating hearts
+        document.addEventListener('click', function(e) {
+            createHeart(e.clientX, e.clientY);
+        });
+
+        document.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            const touch = e.touches[0];
+            createHeart(touch.clientX, touch.clientY);
+        });
+
+        // Prevent scrolling on touch devices
+        document.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+        }, { passive: false });
+    </script>
+</body>
+</html>
